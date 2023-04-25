@@ -115,7 +115,7 @@ export class CalcComponent implements OnInit {
   getPekCities() {
     this.pekSrv.getCities()
       .subscribe((data) => {
-        const cities = data.cities;
+        const cities = data[`cities`];
         cities.map((x) => {
           this.pecCities[x[0]] = x[1];
         });
@@ -131,7 +131,7 @@ export class CalcComponent implements OnInit {
   getSdekCities() {
     this.sdekSrv.getCities()
       .subscribe((data) => {
-        const cities = data.cities;
+        const cities = data[`cities`];
         cities.map((x) => {
           this.sdekCities[x[0]] = x[1];
         });
@@ -215,19 +215,20 @@ export class CalcComponent implements OnInit {
       insurance: this.insurance,
       statedValue: this.statedValue
     };
+    // tslint:disable-next-line:no-shadowed-variable
     this.pekSrv.calculate(data).subscribe((data) => {
       // console.log(data);
       this.pekResponse = data;
-      if (data.error) {
+      if (data[`error`]) {
         // this.errors = this.errors.concat(data['error']
        //   .map(e => {return 'ПЭК: ' + e['title'] + ' - ' [e['message']]}));
-        this.errors.push('ПЭК: ' + data.error.title + ' - ' + data.error.message);
+        this.errors.push('ПЭК: ' + data[`error`].title + ' - ' + data[`error`].message);
         this.pekAutoCost = '0';
         this.pekTime = '0';
       }
-      if (data.transfers) {
-        this.pekAutoCost = data.transfers[0].costTotal;
-        this.pekTime = data.commonTerms[0].transporting[0];
+      if (data[`transfers`]) {
+        this.pekAutoCost = data[`transfers`][0].costTotal;
+        this.pekTime = data[`commonTerms`][0].transporting[0];
       }
       this.pekSpin = false;
     });
@@ -254,14 +255,14 @@ export class CalcComponent implements OnInit {
     this.sdekSrv.calculate(data).subscribe((data) => {
       console.log(data);
       this.dlResponse = data;
-      if (data.errors) {
-        this.errors = this.errors.concat(Object.values(data.errors).map(e => 'Деловые Линии: ' + e));
+      if (data[`errors`]) {
+        this.errors = this.errors.concat(Object.values(data[`errors`]).map(e => 'Деловые Линии: ' + e));
         this.dlAutoCost = '0';
         this.dlTime = '0';
       }
-      if (data.price) {
-        this.dlAutoCost = data.price;
-        this.dlTime = data.time.value;
+      if (data[`price`]) {
+        this.dlAutoCost = data[`price`];
+        this.dlTime = data[`time`].value;
       }
       this.dlSpin = false;
     });
